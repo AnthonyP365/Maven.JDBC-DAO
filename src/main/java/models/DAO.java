@@ -56,7 +56,7 @@ public class DAO implements IntDAO<DTO> {
     }
 
     @Override
-    public DTO update(DTO dto) {
+    public Boolean update(DTO dto) {
         try {
             PreparedStatement ps = connection.prepareStatement("UPDATE car SET make=?, model=?, year=?, color=? WHERE id=?");
             ps.setString(1, dto.getMake());
@@ -64,18 +64,17 @@ public class DAO implements IntDAO<DTO> {
             ps.setInt(3, dto.getYear());
             ps.setString(4, dto.getColor());
             int i = ps.executeUpdate();
-
             if (i == 1) {
-                return dto;
+                return true;
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return null;
+        return false;
     }
 
     @Override
-    public DTO create(DTO dto) {
+    public Boolean create(DTO dto) {
         try {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO car VALUES (NULL, ?, ?, ?)");
             ps.setString(1, dto.getMake());
@@ -83,23 +82,26 @@ public class DAO implements IntDAO<DTO> {
             ps.setInt(3, dto.getYear());
             ps.setString(4, dto.getColor());
             int i = ps.executeUpdate();
-
             if (i == 1) {
-                return dto;
+                return true;
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return null;
+        return false;
     }
 
     @Override
-    public void delete(int id) {
+    public Boolean delete(int id) {
         try {
             Statement stmt = connection.createStatement();
             int i = stmt.executeUpdate("DELETE FROM car WHERE id=" + id);
+            if (i == 1) {
+                return true;
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        return false;
     }
 }
